@@ -1,24 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Calcolatrice Next.js in stile iOS
 
-## Getting Started
+Questo progetto è una calcolatrice moderna sviluppata con [Next.js](https://nextjs.org), ispirata al design iOS. Permette di eseguire le quattro operazioni base (+, -, ×, ÷) e tiene traccia della cronologia delle operazioni.
 
-First, run the development server:
+## Funzionalità principali
+
+- **Interfaccia elegante**: Design scuro, pulsanti arrotondati e layout in stile iOS.
+- **Quattro operazioni base**: Addizione, sottrazione, moltiplicazione e divisione.
+- **Highlight operatore attivo**: L'operatore selezionato viene evidenziato.
+- **Cronologia**: Visualizzazione delle operazioni svolte sulla destra.
+- **Responsive**: Utilizzabile sia da desktop che da mobile.
+
+## Come iniziare
+
+Avvia il server di sviluppo:
 
 ```bash
 npm run dev
-# or
+# oppure
 yarn dev
-# or
+# oppure
 pnpm dev
-# or
+# oppure
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Apri [http://localhost:3000](http://localhost:3000) nel browser per vedere la calcolatrice.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Utilizzo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Inserisci i numeri tramite i pulsanti.
+- Seleziona l'operatore desiderato (+, -, ×, ÷).
+- Premi `=` per vedere il risultato.
+- La cronologia delle operazioni apparirà sulla destra.
+- Usa `AC` per azzerare la calcolatrice.
+
+## Personalizzazione
+
+Puoi modificare la calcolatrice editando il file `app/page.tsx`. Le modifiche saranno applicate automaticamente.
+
+---
+
+Creato con Next.js e tanto stile! 🚀
 
 ## Learn More
 

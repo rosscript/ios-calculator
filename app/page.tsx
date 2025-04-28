@@ -1,103 +1,181 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+
+export default function Homepage() {
+  const [display, setDisplay] = useState("0");
+  const [firstNumber, setFirstNumber] = useState("");
+  const [operation, setOperation] = useState("");
+  const [newNumber, setNewNumber] = useState(false);
+  const [history, setHistory] = useState<string[]>([]);
+
+  const handleNumber = (num: string) => {
+    if (display === "0" || newNumber) {
+      setDisplay(num);
+      setNewNumber(false);
+    } else {
+      setDisplay(display + num);
+    }
+  };
+
+  const handleOperation = (op: string) => {
+    setFirstNumber(display);
+    setOperation(op);
+    setNewNumber(true);
+  };
+
+  const calculate = () => {
+    const num1 = parseFloat(firstNumber);
+    const num2 = parseFloat(display);
+    let result = 0;
+    let opSymbol = operation;
+    switch (operation) {
+      case "+":
+        result = num1 + num2;
+        break;
+      case "-":
+        result = num1 - num2;
+        break;
+      case "×":
+        result = num1 * num2;
+        break;
+      case "÷":
+        result = num1 / num2;
+        break;
+      default:
+        opSymbol = "";
+    }
+    setDisplay(result.toString());
+    setNewNumber(true);
+    if (opSymbol) {
+      setHistory([`${firstNumber} ${opSymbol} ${display} = ${result}`,...history]);
+    }
+    setOperation("");
+    setFirstNumber("");
+  };
+
+  const clear = () => {
+    setDisplay("0");
+    setFirstNumber("");
+    setOperation("");
+    setNewNumber(false);
+  };
+
+  const operatorButtons = [
+    { symbol: "÷" },
+    { symbol: "×" },
+    { symbol: "-" },
+    { symbol: "+" },
+  ];
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-8">
+      <div className="flex gap-8">
+        {/* Calcolatrice */}
+        <div className="w-80 bg-black rounded-3xl shadow-2xl p-6 transform hover:scale-105 transition-transform duration-300 flex flex-col">
+          <div className="h-32 flex items-end justify-end mb-4">
+            <h1 className="text-5xl font-light text-white text-right w-full overflow-hidden">
+              {firstNumber && operation ? `${firstNumber} ${operation}` : ""}
+              <br />
+              {display}
+            </h1>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {/* Prima riga */}
+            <button onClick={clear} className="col-span-3 h-16 rounded-full bg-gray-500 text-white text-xl hover:bg-gray-600 transition-colors">
+              AC
+            </button>
+            <button
+              onClick={() => handleOperation(operatorButtons[0].symbol)}
+              className={`h-16 rounded-full text-white text-xl transition-colors ${operation === operatorButtons[0].symbol ? "bg-orange-400" : "bg-orange-500 hover:bg-orange-600"}`}
+            >
+              {operatorButtons[0].symbol}
+            </button>
+            {/* Seconda riga */}
+            {[7, 8, 9].map((num) => (
+              <button
+                key={num}
+                onClick={() => handleNumber(num.toString())}
+                className="h-16 rounded-full bg-gray-700 text-white text-xl hover:bg-gray-600 transition-colors"
+              >
+                {num}
+              </button>
+            ))}
+            <button
+              onClick={() => handleOperation(operatorButtons[1].symbol)}
+              className={`h-16 rounded-full text-white text-xl transition-colors ${operation === operatorButtons[1].symbol ? "bg-orange-400" : "bg-orange-500 hover:bg-orange-600"}`}
+            >
+              {operatorButtons[1].symbol}
+            </button>
+            {/* Terza riga */}
+            {[4, 5, 6].map((num) => (
+              <button
+                key={num}
+                onClick={() => handleNumber(num.toString())}
+                className="h-16 rounded-full bg-gray-700 text-white text-xl hover:bg-gray-600 transition-colors"
+              >
+                {num}
+              </button>
+            ))}
+            <button
+              onClick={() => handleOperation(operatorButtons[2].symbol)}
+              className={`h-16 rounded-full text-white text-xl transition-colors ${operation === operatorButtons[2].symbol ? "bg-orange-400" : "bg-orange-500 hover:bg-orange-600"}`}
+            >
+              {operatorButtons[2].symbol}
+            </button>
+            {/* Quarta riga */}
+            {[1, 2, 3].map((num) => (
+              <button
+                key={num}
+                onClick={() => handleNumber(num.toString())}
+                className="h-16 rounded-full bg-gray-700 text-white text-xl hover:bg-gray-600 transition-colors"
+              >
+                {num}
+              </button>
+            ))}
+            <button
+              onClick={() => handleOperation(operatorButtons[3].symbol)}
+              className={`h-16 rounded-full text-white text-xl transition-colors ${operation === operatorButtons[3].symbol ? "bg-orange-400" : "bg-orange-500 hover:bg-orange-600"}`}
+            >
+              {operatorButtons[3].symbol}
+            </button>
+            {/* Quinta riga */}
+            <button
+              onClick={() => handleNumber("0")}
+              className="col-span-2 h-16 rounded-full bg-gray-700 text-white text-xl hover:bg-gray-600 transition-colors"
+            >
+              0
+            </button>
+            <button
+              onClick={() => handleNumber(".")}
+              className="h-16 rounded-full bg-gray-700 text-white text-xl hover:bg-gray-600 transition-colors"
+            >
+              .
+            </button>
+            <button
+              onClick={calculate}
+              className="h-16 rounded-full bg-orange-500 text-white text-xl hover:bg-orange-600 transition-colors col-span-1"
+            >
+              =
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        {/* Cronologia */}
+        <div className="w-72 bg-black/80 rounded-3xl shadow-2xl p-6 flex flex-col">
+          <h2 className="text-xl font-bold text-white mb-4 text-center">Cronologia</h2>
+          <div className="flex-1 overflow-y-auto space-y-2">
+            {history.length === 0 ? (
+              <p className="text-gray-400 text-center">Nessuna operazione</p>
+            ) : (
+              history.map((item, idx) => (
+                <div key={idx} className="text-white bg-gray-800 rounded-lg px-3 py-2 text-sm">
+                  {item}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
